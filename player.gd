@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody3D
 
 @onready var camera_rotation_center: Node3D = $CameraRotationCenter
@@ -10,6 +11,7 @@ var jump_strength : float = 5
 var mouse_sensetivity : float = 0.002
 var movement_speed : float = 5
 var rotation_speed : float = 10
+var punch_damage : int = 10
 
 
 func _ready() -> void:
@@ -50,3 +52,8 @@ func handle_rotation(event: InputEventMouseMotion):
 	camera_rotation_center.rotate_x(event.relative.y * mouse_sensetivity)
 	
 	camera_rotation_center.rotation.x = deg_to_rad(clamp(rad_to_deg(camera_rotation_center.rotation.x), -90, 90))
+
+
+func _on_area_3d_body_entered(body: Node3D) -> void:
+	if body is Player and not body == self:
+		body.damage(punch_damage)
