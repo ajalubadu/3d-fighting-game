@@ -77,8 +77,13 @@ func damage(amount: int) -> void:
 		print(health)
 
 
+@rpc
+func damage_other_player(player_path: NodePath, amount: int):
+	get_node(player_path).damage(amount)
+
+
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	print(name, "entered")
 	if body is Player and not body == self:
 		print(name, "hit")
-		body.damage.rpc(punch_damage)
+		damage_other_player.rpc(body.get_path(), punch_damage)
