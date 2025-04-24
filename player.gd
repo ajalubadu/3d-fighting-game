@@ -16,6 +16,8 @@ var punch_damage : int = 10
 
 @export var health : int = 100
 
+var dead : bool = false
+
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(name.to_int())
@@ -37,7 +39,7 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if is_multiplayer_authority():
+	if is_multiplayer_authority() and not dead:
 		if not is_on_floor():
 			velocity.y += -1 * gravity_strength * delta
 		
@@ -53,7 +55,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if is_multiplayer_authority():
+	if is_multiplayer_authority() and not dead:
 		if event is InputEventMouseMotion:
 			handle_rotation(event)
 
@@ -66,15 +68,18 @@ func handle_rotation(event: InputEventMouseMotion):
 
 
 func damage(amount: int) -> void:
-	print(name, "damaged")
 	if health - amount <= 0:
-		pass
+		die()
 	else:
-		print(health, "  ", amount)
-		
 		health -= amount
-		
-		print(health)
+
+
+func die():
+	animation_tree.set("parameters/conditions/die", true)
+
+
+func disable_player_input():
+	dead = true
 
 
 @rpc
@@ -83,7 +88,5 @@ func damage_other_player(player_path: NodePath, amount: int):
 
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	print(name, "entered")
 	if body is Player and not body == self:
-		print(name, "hit")
 		damage_other_player.rpc(body.get_path(), punch_damage)

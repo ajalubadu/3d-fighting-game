@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c0x7y34n0fc4x"]
+[gd_scene load_steps=8 format=3 uid="uid://c0x7y34n0fc4x"]
 
 [ext_resource type="Script" uid="uid://c1cw6607wqcr7" path="res://world.gd" id="1_aqk2v"]
 [ext_resource type="Texture2D" uid="uid://b15ousafb0ayg" path="res://Poliigon_ConcretePaversSquare_7100_BaseColor.jpg" id="1_fj7yv"]
@@ -14,10 +14,6 @@ normal_texture = ExtResource("2_tlwt5")
 material = SubResource("StandardMaterial3D_036b0")
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tlwt5"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_tlwt5"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tlwt5"]
 
 [node name="World" type="Node3D"]
 transform = Transform3D(1, -0.000280037, 0.00017152, 0.000280029, 1, 4.61452e-05, -0.000171534, -4.60931e-05, 1, 0, 0, 0)
@@ -37,16 +33,6 @@ skeleton = NodePath("../..")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(1, -9.76996e-12, 0, -9.02745e-12, 1, -3.63798e-12, 0, 0, 1, 0, 0, 0)
 shape = SubResource("WorldBoundaryShape3D_tlwt5")
-
-[node name="Enemy" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy"]
-transform = Transform3D(1, -9.75842e-12, 0, -9.01146e-12, 1, 0, 0, -3.63798e-12, 1, 0, 0, 0)
-mesh = SubResource("CapsuleMesh_tlwt5")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Enemy"]
-shape = SubResource("CapsuleShape3D_tlwt5")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://b0mpf1y4pno38")

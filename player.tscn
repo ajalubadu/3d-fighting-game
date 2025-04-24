@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b0mpf1y4pno38"]
+[gd_scene load_steps=21 format=3 uid="uid://b0mpf1y4pno38"]
 
 [ext_resource type="Script" uid="uid://bpwu6nladuy6s" path="res://player.gd" id="1_4flbx"]
 
@@ -31,6 +31,48 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector3(0.700813, -2.38419e-07, 0.209548)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation:z")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_4flbx"]
+resource_name = "die"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation:z")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.5708]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"disable_player_input"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_onrkg"]
 resource_name = "punch"
@@ -51,11 +93,15 @@ tracks/0/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hqtel"]
 _data = {
 &"RESET": SubResource("Animation_i3pqv"),
+&"die": SubResource("Animation_4flbx"),
 &"punch": SubResource("Animation_onrkg")
 }
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4flbx"]
 animation = &"RESET"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i3pqv"]
+animation = &"die"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_onrkg"]
 animation = &"punch"
@@ -71,12 +117,22 @@ advance_condition = &"punching"
 switch_mode = 2
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2hs0m"]
+advance_mode = 2
+advance_condition = &"die"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1jxqw"]
+advance_mode = 2
+advance_condition = &"die"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_2hs0m"]
 states/RESET/node = SubResource("AnimationNodeAnimation_4flbx")
 states/RESET/position = Vector2(398, 100)
+states/die/node = SubResource("AnimationNodeAnimation_i3pqv")
+states/die/position = Vector2(504, 190)
 states/punch/node = SubResource("AnimationNodeAnimation_onrkg")
 states/punch/position = Vector2(610, 100)
-transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_i3pqv"), "RESET", "punch", SubResource("AnimationNodeStateMachineTransition_hqtel"), "punch", "RESET", SubResource("AnimationNodeStateMachineTransition_sweqy")]
+transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_i3pqv"), "RESET", "punch", SubResource("AnimationNodeStateMachineTransition_hqtel"), "punch", "RESET", SubResource("AnimationNodeStateMachineTransition_sweqy"), "RESET", "die", SubResource("AnimationNodeStateMachineTransition_2hs0m"), "punch", "die", SubResource("AnimationNodeStateMachineTransition_1jxqw")]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
 properties/0/path = NodePath(".:position")
@@ -125,6 +181,7 @@ libraries = {
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_2hs0m")
 anim_player = NodePath("../AnimationPlayer")
+parameters/conditions/die = false
 parameters/conditions/punching = false
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
